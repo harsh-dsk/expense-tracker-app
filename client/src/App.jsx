@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Dashboard from './components/Dashboard';
+import DashboardPage from './pages/DashboardPage';
+import ExpensesPage from './pages/ExpensesPage';
+import AnalyticsPage from './pages/AnalyticsPage';
+import ProfilePage from './pages/ProfilePage';
 
 const INITIAL_EXPENSES = [
   {
@@ -44,14 +48,26 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <Navbar />
-      <Dashboard
-        expenses={expenses}
-        onAddExpense={handleAddExpense}
-        onDeleteExpense={handleDeleteExpense}
-      />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen bg-zinc-950 text-zinc-100">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<DashboardPage expenses={expenses} />} />
+          <Route
+            path="/expenses"
+            element={
+              <ExpensesPage
+                expenses={expenses}
+                onAddExpense={handleAddExpense}
+                onDeleteExpense={handleDeleteExpense}
+              />
+            }
+          />
+          <Route path="/analytics" element={<AnalyticsPage expenses={expenses} />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

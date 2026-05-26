@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 
 const NAV_LINKS = [
-  { id: 'dashboard', label: 'Dashboard', href: '#dashboard' },
-  { id: 'expenses', label: 'Expenses', href: '#expenses' },
-  { id: 'analytics', label: 'Analytics', href: '#analytics' },
-  { id: 'profile', label: 'Profile', href: '#profile' },
+  { id: 'dashboard', label: 'Dashboard', to: '/' },
+  { id: 'expenses', label: 'Expenses', to: '/expenses' },
+  { id: 'analytics', label: 'Analytics', to: '/analytics' },
+  { id: 'profile', label: 'Profile', to: '/profile' },
 ];
 
 function WalletIcon({ className }) {
@@ -60,7 +61,6 @@ function CloseIcon({ className }) {
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState('dashboard');
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -71,18 +71,13 @@ function Navbar() {
 
   const closeMenu = () => setMenuOpen(false);
 
-  const linkClass = (id) =>
+  const linkClass = ({ isActive }) =>
     [
       'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-      activeLink === id
+      isActive
         ? 'bg-emerald-500/15 text-emerald-400'
         : 'text-zinc-400 hover:bg-zinc-800/80 hover:text-zinc-100',
     ].join(' ');
-
-  const handleNavClick = (id) => {
-    setActiveLink(id);
-    closeMenu();
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur-md">
@@ -90,10 +85,10 @@ function Navbar() {
         className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8"
         aria-label="Main navigation"
       >
-        <a
-          href="#dashboard"
+        <Link
+          to="/"
           className="group flex shrink-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
-          onClick={() => setActiveLink('dashboard')}
+          onClick={closeMenu}
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-zinc-950 shadow-lg shadow-emerald-500/20 transition group-hover:shadow-emerald-500/35">
             <WalletIcon className="h-5 w-5" />
@@ -106,19 +101,14 @@ function Navbar() {
               Tracker
             </span>
           </span>
-        </a>
+        </Link>
 
         <ul className="hidden list-none items-center gap-1 md:flex">
-          {NAV_LINKS.map(({ id, label, href }) => (
+          {NAV_LINKS.map(({ id, label, to }) => (
             <li key={id}>
-              <a
-                href={href}
-                className={linkClass(id)}
-                aria-current={activeLink === id ? 'page' : undefined}
-                onClick={() => handleNavClick(id)}
-              >
+              <NavLink to={to} end={to === '/'} className={linkClass}>
                 {label}
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -130,12 +120,12 @@ function Navbar() {
           >
             Sign in
           </button>
-          <a
-            href="#add-expense"
+          <Link
+            to="/expenses#add-expense"
             className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 shadow-md shadow-emerald-500/25 transition hover:bg-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
           >
             + Add expense
-          </a>
+          </Link>
         </div>
 
         <button
@@ -174,16 +164,16 @@ function Navbar() {
         aria-hidden={!menuOpen}
       >
         <ul className="list-none space-y-1 px-4 py-4 sm:px-6">
-          {NAV_LINKS.map(({ id, label, href }) => (
+          {NAV_LINKS.map(({ id, label, to }) => (
             <li key={id}>
-              <a
-                href={href}
-                className={`block ${linkClass(id)}`}
-                aria-current={activeLink === id ? 'page' : undefined}
-                onClick={() => handleNavClick(id)}
+              <NavLink
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) => `block ${linkClass({ isActive })}`}
+                onClick={closeMenu}
               >
                 {label}
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -195,13 +185,13 @@ function Navbar() {
           >
             Sign in
           </button>
-          <a
-            href="#add-expense"
+          <Link
+            to="/expenses#add-expense"
             className="block w-full rounded-lg bg-emerald-500 px-4 py-2.5 text-center text-sm font-semibold text-zinc-950 shadow-md shadow-emerald-500/25 transition hover:bg-emerald-400"
             onClick={closeMenu}
           >
             + Add expense
-          </a>
+          </Link>
         </div>
       </div>
     </header>
