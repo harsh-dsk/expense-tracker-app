@@ -12,6 +12,7 @@ const INITIAL_EXPENSES = [
     title: 'Weekly groceries',
     amount: 2450,
     category: 'food',
+    paymentMethod: 'upi',
     date: '2026-05-24',
   },
   {
@@ -19,6 +20,7 @@ const INITIAL_EXPENSES = [
     title: 'Metro pass',
     amount: 800,
     category: 'transport',
+    paymentMethod: 'card',
     date: '2026-05-22',
   },
   {
@@ -26,6 +28,7 @@ const INITIAL_EXPENSES = [
     title: 'Streaming subscription',
     amount: 499,
     category: 'entertainment',
+    paymentMethod: 'card',
     date: '2026-05-20',
   },
 ];

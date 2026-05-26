@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { CATEGORIES } from '../constants/categories';
+import { DEFAULT_PAYMENT_METHOD, PAYMENT_METHODS } from '../constants/paymentMethods';
 
 const initialForm = {
   title: '',
   amount: '',
   category: 'food',
+  paymentMethod: DEFAULT_PAYMENT_METHOD,
   date: new Date().toISOString().slice(0, 10),
 };
 
@@ -38,6 +40,7 @@ function AddExpenseForm({ onAdd }) {
       title,
       amount,
       category: form.category,
+      paymentMethod: form.paymentMethod,
       date: form.date,
     });
 
@@ -118,23 +121,47 @@ function AddExpenseForm({ onAdd }) {
           </div>
         </div>
 
-        <div>
-          <label htmlFor="category" className="mb-1.5 block text-xs font-medium text-zinc-400">
-            Category
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            {CATEGORIES.map(({ id, label }) => (
-              <option key={id} value={id}>
-                {label}
-              </option>
-            ))}
-          </select>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="category" className="mb-1.5 block text-xs font-medium text-zinc-400">
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              {CATEGORIES.map(({ id, label }) => (
+                <option key={id} value={id}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="paymentMethod"
+              className="mb-1.5 block text-xs font-medium text-zinc-400"
+            >
+              Payment method
+            </label>
+            <select
+              id="paymentMethod"
+              name="paymentMethod"
+              value={form.paymentMethod}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              {PAYMENT_METHODS.map(({ id, label }) => (
+                <option key={id} value={id}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {error ? (
