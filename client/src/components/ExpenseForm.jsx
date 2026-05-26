@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Calendar } from 'lucide-react';
 import { CATEGORIES } from '../constants/categories';
 import { PAYMENT_METHODS } from '../constants/paymentMethods';
 import { validateExpenseDraft } from '../utils/expenseValidation';
@@ -38,6 +39,7 @@ function ExpenseForm({
     setError('');
 
     const result = validateExpenseDraft(form);
+
     if (!result.ok) {
       setError(result.error);
       return;
@@ -45,6 +47,7 @@ function ExpenseForm({
 
     try {
       setIsSaving(true);
+
       await onSubmit?.(result.value);
 
       if (resetOnSuccess) {
@@ -72,16 +75,23 @@ function ExpenseForm({
         >
           {heading ?? 'Add expense'}
         </h2>
+
         <p className="mt-1 text-sm text-zinc-500">
           Track spending with a title, amount, category, and payment method.
         </p>
       </div>
 
       <div className="space-y-4">
+
+        {/* Description */}
         <div>
-          <label htmlFor="title" className="mb-1.5 block text-xs font-medium text-zinc-400">
+          <label
+            htmlFor="title"
+            className="mb-1.5 block text-xs font-medium text-zinc-400"
+          >
             Description
           </label>
+
           <input
             id="title"
             name="title"
@@ -94,45 +104,70 @@ function ExpenseForm({
           />
         </div>
 
+        {/* Amount + Date */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+          {/* Amount */}
           <div>
-            <label htmlFor="amount" className="mb-1.5 block text-xs font-medium text-zinc-400">
+            <label
+              htmlFor="amount"
+              className="mb-1.5 block text-xs font-medium text-zinc-400"
+            >
               Amount (₹)
             </label>
+
             <input
               id="amount"
               name="amount"
               type="number"
               min="0"
-              step="0.01"
               value={form.amount}
               onChange={handleChange}
-              placeholder="0"
-              className={inputClass}
-              inputMode="decimal"
+              placeholder="Enter amount"
+              className={`${inputClass} appearance-none`}
+              inputMode="numeric"
             />
           </div>
 
+          {/* Date */}
           <div>
-            <label htmlFor="date" className="mb-1.5 block text-xs font-medium text-zinc-400">
+            <label
+              htmlFor="date"
+              className="mb-1.5 block text-xs font-medium text-zinc-400"
+            >
               Date
             </label>
-            <input
-              id="date"
-              name="date"
-              type="date"
-              value={form.date}
-              onChange={handleChange}
-              className={inputClass}
-            />
+
+            <div className="relative">
+              <input
+                id="date"
+                name="date"
+                type="date"
+                value={form.date}
+                onChange={handleChange}
+                className={`${inputClass} pr-10`}
+              />
+
+              <Calendar
+                size={18}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500"
+              />
+            </div>
           </div>
+
         </div>
 
+        {/* Category + Payment Method */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
           <div>
-            <label htmlFor="category" className="mb-1.5 block text-xs font-medium text-zinc-400">
+            <label
+              htmlFor="category"
+              className="mb-1.5 block text-xs font-medium text-zinc-400"
+            >
               Category
             </label>
+
             <select
               id="category"
               name="category"
@@ -155,6 +190,7 @@ function ExpenseForm({
             >
               Payment method
             </label>
+
             <select
               id="paymentMethod"
               name="paymentMethod"
@@ -169,15 +205,19 @@ function ExpenseForm({
               ))}
             </select>
           </div>
+
         </div>
 
+        {/* Error */}
         {error ? (
           <p className="text-sm text-rose-400" role="alert">
             {error}
           </p>
         ) : null}
 
+        {/* Buttons */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
           {onCancel ? (
             <button
               type="button"
@@ -188,6 +228,7 @@ function ExpenseForm({
               Cancel
             </button>
           ) : null}
+
           <button
             type="submit"
             disabled={isSaving || submitDisabled}
@@ -195,11 +236,12 @@ function ExpenseForm({
           >
             {isSaving ? 'Saving…' : submitLabel}
           </button>
+
         </div>
+
       </div>
     </form>
   );
 }
 
 export default ExpenseForm;
-
