@@ -1,6 +1,6 @@
 import ExpenseItem from './ExpenseItem';
 
-function ExpenseList({ expenses, onDelete }) {
+function ExpenseList({ expenses, onDelete, onEdit }) {
   if (expenses.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30 px-6 py-12 text-center">
@@ -15,7 +15,12 @@ function ExpenseList({ expenses, onDelete }) {
   return (
     <ul className="space-y-3" aria-label="Expense list">
       {expenses.map((expense) => (
-        <ExpenseItem key={expense.id} expense={expense} onDelete={onDelete} />
+        <ExpenseItem
+          key={expense.id}
+          expense={expense}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
       ))}
     </ul>
   );

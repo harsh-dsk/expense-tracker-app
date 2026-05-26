@@ -11,7 +11,7 @@ const TONE_STYLES = {
 };
 
 function CategoryTag({ categoryId, className = '' }) {
-  const category = CATEGORY_BY_ID[categoryId] ?? CATEGORY_BY_ID.other;
+  const category = CATEGORY_BY_ID[categoryId] ?? CATEGORY_BY_ID.education;
   const toneClass = TONE_STYLES[category.tone] ?? TONE_STYLES.zinc;
 
   return (

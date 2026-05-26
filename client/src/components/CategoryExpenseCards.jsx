@@ -38,6 +38,20 @@ const CARD_THEMES = {
     label: 'text-rose-200/90',
     meta: 'text-rose-300/70',
   },
+  teal: {
+    card: 'border-teal-500/25 bg-gradient-to-br from-teal-500/25 via-teal-600/10 to-zinc-950/50',
+    glow: 'bg-teal-400/25',
+    amount: 'text-teal-100',
+    label: 'text-teal-200/90',
+    meta: 'text-teal-300/70',
+  },
+  zinc: {
+    card: 'border-zinc-500/25 bg-gradient-to-br from-zinc-500/25 via-zinc-600/10 to-zinc-950/50',
+    glow: 'bg-zinc-400/25',
+    amount: 'text-zinc-100',
+    label: 'text-zinc-200/90',
+    meta: 'text-zinc-300/70',
+  },
 };
 
 function CategoryExpenseCard({ category, amount, count }) {
@@ -109,7 +123,7 @@ function CategoryExpenseCards({ expenses, className = '' }) {
             Spending by category
           </h2>
           <p className="text-sm text-zinc-500">
-            Food, transport, entertainment, shopping & bills
+            Spending across your categories
           </p>
         </div>
         <p className="text-sm text-zinc-400">

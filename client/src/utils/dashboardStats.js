@@ -25,7 +25,7 @@ export function getTopExpenseCategory(expenses) {
     entry[1] > top[1] ? entry : top,
   );
 
-  const category = CATEGORY_BY_ID[categoryId] ?? CATEGORY_BY_ID.other;
+  const category = CATEGORY_BY_ID[categoryId] ?? CATEGORY_BY_ID.education;
 
   return { ...category, amount };
 }
@@ -49,9 +49,11 @@ export function getAverageMonthlySpending(expenses) {
 export const FEATURED_CATEGORY_IDS = [
   'food',
   'transport',
-  'entertainment',
   'shopping',
   'bills',
+  'entertainment',
+  'health',
+  'education',
 ];
 
 export function getFeaturedCategorySpending(

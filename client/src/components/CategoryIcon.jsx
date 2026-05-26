@@ -50,6 +50,13 @@ function IconPaths({ categoryId, className }) {
           <circle cx="12" cy="12" r="9" />
         </svg>
       );
+    case 'education':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M22 10l-10-5L2 10l10 5 10-5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12v6c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-6" />
+        </svg>
+      );
     default:
       return (
         <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
@@ -61,7 +68,7 @@ function IconPaths({ categoryId, className }) {
 }
 
 function CategoryIcon({ categoryId, className = '' }) {
-  const category = CATEGORY_BY_ID[categoryId] ?? CATEGORY_BY_ID.other;
+  const category = CATEGORY_BY_ID[categoryId] ?? CATEGORY_BY_ID.education;
   const toneClass = ICON_TONE_STYLES[category.tone] ?? ICON_TONE_STYLES.zinc;
 
   return (
