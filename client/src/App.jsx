@@ -1,21 +1,34 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import SignInModal from './components/SignInModal';
 import DashboardPage from './pages/DashboardPage';
 import ExpensesPage from './pages/ExpensesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProfilePage from './pages/ProfilePage';
 import Toast from './components/Toast';
+import { setPreferredCurrency } from './utils/format';
 import {
   loadExpensesFromStorage,
   normalizeExpenseForStorage,
   saveExpensesToStorage,
 } from './utils/expensesStorage';
+import {
+  loadUserSessionFromStorage,
+  loadUserSettingsFromStorage,
+  normalizeUserSession,
+  normalizeUserSettings,
+  saveUserSessionToStorage,
+  saveUserSettingsToStorage,
+} from './utils/userSettingsStorage';
 
 const STORAGE_SAVE_DEBOUNCE_MS = 150;
 
 function App() {
   const [expenses, setExpenses] = useState(() => loadExpensesFromStorage());
+  const [userSettings, setUserSettings] = useState(() => loadUserSettingsFromStorage());
+  const [userSession, setUserSession] = useState(() => loadUserSessionFromStorage());
+  const [signInOpen, setSignInOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
   const showToast = useCallback((message, type = 'success') => {
@@ -39,7 +52,78 @@ function App() {
     return () => window.clearTimeout(t);
   }, [expenses]);
 
+  useEffect(() => {
+    const normalized = normalizeUserSettings(userSettings);
+    saveUserSettingsToStorage(normalized);
+    setPreferredCurrency(normalized.currency);
+  }, [userSettings]);
+
+  useEffect(() => {
+    saveUserSessionToStorage(userSession);
+  }, [userSession]);
+
   const expensesStable = useMemo(() => expenses, [expenses]);
+
+  const handleSignIn = useCallback(
+    ({ name, email }) => {
+      const session = normalizeUserSession({ name, email });
+      if (!session) {
+        showToast('Enter a valid name and email to sign in.', 'error');
+        return false;
+      }
+
+      const joinedAt = userSettings.joinedAt ?? userSession?.joinedAt ?? session.joinedAt;
+      const nextSession = { ...session, joinedAt };
+
+      setUserSession(nextSession);
+      setUserSettings((prev) =>
+        normalizeUserSettings({
+          ...prev,
+          name: nextSession.name,
+          email: nextSession.email,
+          joinedAt,
+        }),
+      );
+      showToast(`Welcome, ${nextSession.name}`, 'success');
+      return true;
+    },
+    [showToast, userSession?.joinedAt, userSettings.joinedAt],
+  );
+
+  const handleLogout = useCallback(() => {
+    setUserSession(null);
+    showToast('Logged out successfully', 'success');
+  }, [showToast]);
+
+  const handleSaveSettings = useCallback(
+    (partial) => {
+      const next = normalizeUserSettings({
+        ...userSettings,
+        ...partial,
+      });
+
+      if (!next.name || !next.email) {
+        showToast('Name and email are required.', 'error');
+        return false;
+      }
+
+      setUserSettings(next);
+
+      if (userSession) {
+        setUserSession(
+          normalizeUserSession({
+            ...userSession,
+            name: next.name,
+            email: next.email,
+          }),
+        );
+      }
+
+      showToast('Changes saved successfully', 'success');
+      return true;
+    },
+    [showToast, userSession, userSettings],
+  );
 
   const handleAddExpense = useCallback(
     (expense) => {
@@ -76,7 +160,6 @@ function App() {
             ...expense,
             ...updatedFields,
           });
-          // If the update becomes invalid, keep the old data rather than losing it.
           return normalized ?? expense;
         }),
       );
@@ -88,9 +171,23 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
-        <Navbar />
+        <Navbar
+          userSession={userSession}
+          userSettings={userSettings}
+          onOpenSignIn={() => setSignInOpen(true)}
+          onLogout={handleLogout}
+        />
         <Routes>
-          <Route path="/" element={<DashboardPage expenses={expensesStable} />} />
+          <Route
+            path="/"
+            element={
+              <DashboardPage
+                expenses={expensesStable}
+                monthlyBudget={userSettings.monthlyBudget}
+                userName={userSession?.name}
+              />
+            }
+          />
           <Route
             path="/expenses"
             element={
@@ -106,8 +203,27 @@ function App() {
             path="/analytics"
             element={<AnalyticsPage expenses={expensesStable} />}
           />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProfilePage
+                expenses={expensesStable}
+                userSession={userSession}
+                userSettings={userSettings}
+                onSaveSettings={handleSaveSettings}
+                onLogout={handleLogout}
+                onOpenSignIn={() => setSignInOpen(true)}
+              />
+            }
+          />
         </Routes>
+        <SignInModal
+          open={signInOpen}
+          onClose={() => setSignInOpen(false)}
+          onSubmit={handleSignIn}
+          initialName={userSettings.name}
+          initialEmail={userSettings.email}
+        />
         <Toast toast={toast} />
       </div>
     </BrowserRouter>

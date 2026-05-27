@@ -60,9 +60,9 @@ function CategoryExpenseCard({ category, amount, count }) {
   return (
     <article
       className={[
-        'group relative overflow-hidden rounded-2xl border p-4 shadow-lg shadow-black/25',
+        'group relative overflow-hidden rounded-2xl border p-5 shadow-lg shadow-black/25',
         'backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/35',
-        'sm:p-5',
+        'sm:p-6',
         theme.card,
       ].join(' ')}
     >
@@ -85,7 +85,7 @@ function CategoryExpenseCard({ category, amount, count }) {
         </span>
       </div>
 
-      <div className="relative mt-4">
+      <div className="relative mt-5">
         <h3 className={['text-sm font-semibold', theme.label].join(' ')}>
           {category.label}
         </h3>
@@ -134,7 +134,7 @@ function CategoryExpenseCards({ expenses, className = '' }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {categories.map((entry) => (
           <CategoryExpenseCard
             key={entry.id}

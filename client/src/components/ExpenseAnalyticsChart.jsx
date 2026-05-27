@@ -65,7 +65,11 @@ function ChartTooltip({ active, payload, label }) {
   );
 }
 
-function ExpenseAnalyticsChart({ expenses, className = '' }) {
+function ExpenseAnalyticsChart({
+  expenses,
+  className = '',
+  chartHeightClass = 'h-64 sm:h-72 lg:h-80',
+}) {
   const data = buildMonthlyData(expenses);
   const total = data.reduce((sum, entry) => sum + entry.amount, 0);
   const average = data.length ? Math.round(total / data.length) : 0;
@@ -114,7 +118,7 @@ function ExpenseAnalyticsChart({ expenses, className = '' }) {
         </dl>
       </div>
 
-      <div className="h-64 w-full sm:h-72 lg:h-80">
+      <div className={`${chartHeightClass} w-full`}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}

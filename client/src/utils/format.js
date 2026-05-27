@@ -1,11 +1,52 @@
-const currencyFormatter = new Intl.NumberFormat('en-IN', {
-  style: 'currency',
-  currency: 'INR',
-  maximumFractionDigits: 0,
-});
+const CURRENCY_STORAGE_KEY = 'expense-tracker.user-settings.v1';
+const formatterCache = new Map();
+const CURRENCY_LOCALE = {
+  INR: 'en-IN',
+  USD: 'en-US',
+  EUR: 'en-IE',
+  GBP: 'en-GB',
+};
+
+let preferredCurrency = 'INR';
+
+if (typeof window !== 'undefined') {
+  try {
+    const raw = window.localStorage.getItem(CURRENCY_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const currency = String(parsed?.currency ?? '').toUpperCase();
+      if (CURRENCY_LOCALE[currency]) {
+        preferredCurrency = currency;
+      }
+    }
+  } catch {
+    // Ignore storage read errors.
+  }
+}
+
+export function setPreferredCurrency(currency) {
+  const next = String(currency ?? '').toUpperCase();
+  preferredCurrency = CURRENCY_LOCALE[next] ? next : 'INR';
+}
+
+export function getPreferredCurrency() {
+  return preferredCurrency;
+}
 
 export function formatCurrency(amount) {
-  return currencyFormatter.format(amount);
+  const currency = preferredCurrency;
+  const locale = CURRENCY_LOCALE[currency] ?? 'en-IN';
+  const cacheKey = `${locale}:${currency}`;
+  let formatter = formatterCache.get(cacheKey);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    });
+    formatterCache.set(cacheKey, formatter);
+  }
+  return formatter.format(amount);
 }
 
 function parseExpenseDate(dateString) {
