@@ -105,3 +105,12 @@ export function saveUserSessionToStorage(session) {
     // Ignore localStorage persistence failures.
   }
 }
+
+export function clearUserDataFromStorage() {
+  try {
+    localStorage.removeItem(USER_SESSION_STORAGE_KEY);
+    localStorage.removeItem(USER_SETTINGS_STORAGE_KEY);
+  } catch {
+    // Ignore localStorage persistence failures.
+  }
+}

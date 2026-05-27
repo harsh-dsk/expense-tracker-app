@@ -9,11 +9,14 @@ import ProfilePage from './pages/ProfilePage';
 import Toast from './components/Toast';
 import { setPreferredCurrency } from './utils/format';
 import {
+  clearExpensesFromStorage,
   loadExpensesFromStorage,
   normalizeExpenseForStorage,
   saveExpensesToStorage,
 } from './utils/expensesStorage';
 import {
+  clearUserDataFromStorage,
+  DEFAULT_USER_SETTINGS,
   loadUserSessionFromStorage,
   loadUserSettingsFromStorage,
   normalizeUserSession,
@@ -91,7 +94,15 @@ function App() {
   );
 
   const handleLogout = useCallback(() => {
+    clearExpensesFromStorage();
+    clearUserDataFromStorage();
+
+    setExpenses([]);
     setUserSession(null);
+    setUserSettings({ ...DEFAULT_USER_SETTINGS });
+    setPreferredCurrency(DEFAULT_USER_SETTINGS.currency);
+    setSignInOpen(false);
+
     showToast('Logged out successfully', 'success');
   }, [showToast]);
 

@@ -64,3 +64,11 @@ export function saveExpensesToStorage(expenses) {
   }
 }
 
+export function clearExpensesFromStorage() {
+  try {
+    localStorage.removeItem(EXPENSES_STORAGE_KEY);
+  } catch {
+    // Ignore localStorage persistence failures.
+  }
+}
+
