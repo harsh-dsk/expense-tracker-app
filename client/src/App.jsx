@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SignInModal from './components/SignInModal';
 import DashboardPage from './pages/DashboardPage';
@@ -7,6 +7,7 @@ import ExpensesPage from './pages/ExpensesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProfilePage from './pages/ProfilePage';
 import Toast from './components/Toast';
+import { PAGE_TITLES } from './constants/branding';
 import { setPreferredCurrency } from './utils/format';
 import {
   clearExpensesFromStorage,
@@ -26,6 +27,28 @@ import {
 } from './utils/userSettingsStorage';
 
 const STORAGE_SAVE_DEBOUNCE_MS = 150;
+
+function DocumentTitle() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    switch (pathname) {
+      case '/expenses':
+        document.title = PAGE_TITLES.expenses;
+        break;
+      case '/analytics':
+        document.title = PAGE_TITLES.analytics;
+        break;
+      case '/profile':
+        document.title = PAGE_TITLES.profile;
+        break;
+      default:
+        document.title = PAGE_TITLES.dashboard;
+    }
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const [expenses, setExpenses] = useState(() => loadExpensesFromStorage());
@@ -181,6 +204,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <DocumentTitle />
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
         <Navbar
           userSession={userSession}

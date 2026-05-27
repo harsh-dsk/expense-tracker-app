@@ -141,10 +141,10 @@ function Navbar({ userSession, userSettings, onOpenSignIn, onLogout }) {
           </span>
           <span className="flex flex-col leading-tight">
             <span className="text-base font-semibold tracking-tight text-white sm:text-lg">
-              Expense
+              Expense Tracker
             </span>
             <span className="text-xs font-medium text-emerald-400/90 sm:text-sm">
-              Tracker
+              Dashboard
             </span>
           </span>
         </Link>
